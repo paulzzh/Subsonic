@@ -26,7 +26,7 @@ public class JoinGameAppendHandler extends ChannelOutboundHandlerAdapter {
 
     private void tryAppendAndPass(ChannelHandlerContext ctx, ByteBuf buf, ChannelPromise promise) {
         if (VelocityInternals.isJoinGamePacket(ctx.channel(), buf)) {
-            Integer dimId = ctx.channel().attr(GTNH_DIM_ID).getAndSet(null);
+            Integer dimId = ctx.channel().attr(GTNH_DIM_ID).get();
             if (dimId == null) {
                 ctx.write(buf.retain(), promise);
                 return;
