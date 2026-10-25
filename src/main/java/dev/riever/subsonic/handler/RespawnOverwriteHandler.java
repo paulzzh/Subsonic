@@ -5,8 +5,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.AttributeKey;
 
 public class RespawnOverwriteHandler extends ChannelOutboundHandlerAdapter {
+
+    public static final AttributeKey<Integer> GTNH_DIM_ID_RESPAWN = AttributeKey.valueOf("gtnh-dim-id-respawn");
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -23,7 +26,7 @@ public class RespawnOverwriteHandler extends ChannelOutboundHandlerAdapter {
 
     private void tryOverwriteAndPass(ChannelHandlerContext ctx, ByteBuf buf, ChannelPromise promise) {
         if (VelocityInternals.isRespawnPacket(ctx.channel(), buf) && buf.readableBytes() >= 1 + Integer.BYTES) {
-            Integer dimId = ctx.channel().attr(JoinGameAppendHandler.GTNH_DIM_ID).getAndSet(null);
+            Integer dimId = ctx.channel().attr(GTNH_DIM_ID_RESPAWN).getAndSet(null);
             if (dimId != null) {
                 buf.setInt(buf.readerIndex() + 1, dimId);
             }
